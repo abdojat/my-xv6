@@ -88,6 +88,7 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
+  p->priority = DEFAULT_PRIORITY;
   p->profile_name[0] = 0;
   p->syscall_count = 0;
   p->timer_interrupt_count = 0;
@@ -201,6 +202,8 @@ fork(void)
   }
   np->sz = curproc->sz;
   np->parent = curproc;
+  // Children inherit the parent's priority and begin as scheduling peers.
+  np->priority = curproc->priority;
   *np->tf = *curproc->tf;
 
   // Clear %eax so that fork returns 0 in the child.
@@ -296,6 +299,7 @@ wait(void)
         freevm(p->pgdir);
         p->pid = 0;
         p->parent = 0;
+        p->priority = DEFAULT_PRIORITY;
         p->name[0] = 0;
         p->profile_name[0] = 0;
         p->syscall_count = 0;
@@ -625,6 +629,32 @@ get_num_timer_interrupts(int pid)
   }
   release(&ptable.lock);
   return 0;
+}
+
+int
+setprio(int priority)
+{
+  struct proc *curproc = myproc();
+
+  if(priority < MIN_PRIORITY || priority > MAX_PRIORITY)
+    return -1;
+
+  acquire(&ptable.lock);
+  curproc->priority = priority;
+  release(&ptable.lock);
+  return 0;
+}
+
+int
+getprio(void)
+{
+  struct proc *curproc = myproc();
+  int priority;
+
+  acquire(&ptable.lock);
+  priority = curproc->priority;
+  release(&ptable.lock);
+  return priority;
 }
 
 // Print direct children of the current process.

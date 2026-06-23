@@ -31,3 +31,5 @@
 #define SYS_get_proc_name 30
 #define SYS_get_num_syscall 31
 #define SYS_get_num_timer_interrupts 32
+#define SYS_setprio 33
+#define SYS_getprio 34

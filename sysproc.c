@@ -91,6 +91,22 @@ sys_uptime(void)
 }
 
 int
+sys_setprio(void)
+{
+  int priority;
+
+  if(argint(0, &priority) < 0)
+    return -1;
+  return setprio(priority);
+}
+
+int
+sys_getprio(void)
+{
+  return getprio();
+}
+
+int
 sys_hello(void)
 {
   cprintf("Hello\n");
