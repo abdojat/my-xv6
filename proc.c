@@ -788,6 +788,25 @@ sigsend(int pid)
   return -1;
 }
 
+int
+dequeue_signal(void (**handler)(void))
+{
+  struct proc *p = myproc();
+
+  if(p == 0)
+    return 0;
+
+  acquire(&ptable.lock);
+  if(p->signal_pending == 0 || p->signal_handler == 0){
+    release(&ptable.lock);
+    return 0;
+  }
+  p->signal_pending = 0;
+  *handler = (void (*)(void))p->signal_handler;
+  release(&ptable.lock);
+  return 1;
+}
+
 // Print direct children of the current process.
 void
 getChildren(void)

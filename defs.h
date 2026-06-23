@@ -123,6 +123,7 @@ int             welcomeFunction(void *);
 int             welcomeDone(void);
 int             signal(void *);
 int             sigsend(int);
+int             dequeue_signal(void (**handler)(void));
 struct cpu*     mycpu(void);
 struct proc*    myproc();
 void            pinit(void);
