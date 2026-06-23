@@ -112,6 +112,7 @@ void            getChildren(void);
 void            getSibling(void);
 void            pstree(void);
 int             is_proc_valid(int);
+int             get_proc_state(int, char*, int);
 struct cpu*     mycpu(void);
 struct proc*    myproc();
 void            pinit(void);

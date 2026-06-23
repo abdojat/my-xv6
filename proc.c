@@ -516,6 +516,40 @@ is_proc_valid(int pid)
   return 0;
 }
 
+static char*
+procstate_name(enum procstate state)
+{
+  static char *states[] = {
+    [UNUSED]   = "UNUSED",
+    [EMBRYO]   = "EMBRYO",
+    [SLEEPING] = "SLEEPING",
+    [RUNNABLE] = "RUNNABLE",
+    [RUNNING]  = "RUNNING",
+    [ZOMBIE]   = "ZOMBIE",
+  };
+
+  if(state >= 0 && state < NELEM(states) && states[state])
+    return states[state];
+  return "UNKNOWN";
+}
+
+int
+get_proc_state(int pid, char *buf, int size)
+{
+  struct proc *p;
+
+  acquire(&ptable.lock);
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->pid != pid)
+      continue;
+    safestrcpy(buf, procstate_name(p->state), size);
+    release(&ptable.lock);
+    return 1;
+  }
+  release(&ptable.lock);
+  return 0;
+}
+
 // Print direct children of the current process.
 void
 getChildren(void)

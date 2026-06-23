@@ -175,6 +175,7 @@ UPROGS=\
 	_hello\
 	_helloyou\
 	_test_valid\
+	_test_state\
 	_pstree\
 	_init\
 	_kill\
