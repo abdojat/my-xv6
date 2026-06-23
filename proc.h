@@ -46,6 +46,7 @@ struct proc {
   enum procstate state;        // Process state
   int pid;                     // Process ID
   int priority;                // Scheduling priority
+  int current_weight;          // Scheduler bookkeeping for weighted RR
   struct proc *parent;         // Parent process
   struct trapframe *tf;        // Trap frame for current syscall
   struct context *context;     // swtch() here to run process

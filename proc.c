@@ -89,6 +89,7 @@ found:
   p->state = EMBRYO;
   p->pid = nextpid++;
   p->priority = DEFAULT_PRIORITY;
+  p->current_weight = 0;
   p->profile_name[0] = 0;
   p->syscall_count = 0;
   p->timer_interrupt_count = 0;
@@ -204,6 +205,7 @@ fork(void)
   np->parent = curproc;
   // Children inherit the parent's priority and begin as scheduling peers.
   np->priority = curproc->priority;
+  np->current_weight = 0;
   *np->tf = *curproc->tf;
 
   // Clear %eax so that fork returns 0 in the child.
@@ -300,6 +302,7 @@ wait(void)
         p->pid = 0;
         p->parent = 0;
         p->priority = DEFAULT_PRIORITY;
+        p->current_weight = 0;
         p->name[0] = 0;
         p->profile_name[0] = 0;
         p->syscall_count = 0;
@@ -334,27 +337,39 @@ void
 scheduler(void)
 {
   struct proc *p;
+  struct proc *selected;
   struct cpu *c = mycpu();
+  int total_priority;
   c->proc = 0;
   
   for(;;){
     // Enable interrupts on this processor.
     sti();
 
-    // Loop over process table looking for process to run.
     acquire(&ptable.lock);
+    selected = 0;
+    total_priority = 0;
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if(p->state != RUNNABLE)
         continue;
 
+      p->current_weight += p->priority;
+      total_priority += p->priority;
+      if(selected == 0 || p->current_weight > selected->current_weight)
+        selected = p;
+    }
+
+    if(selected != 0){
+      selected->current_weight -= total_priority;
+
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
       // before jumping back to us.
-      c->proc = p;
-      switchuvm(p);
-      p->state = RUNNING;
+      c->proc = selected;
+      switchuvm(selected);
+      selected->state = RUNNING;
 
-      swtch(&(c->scheduler), p->context);
+      swtch(&(c->scheduler), selected->context);
       switchkvm();
 
       // Process is done running for now.
