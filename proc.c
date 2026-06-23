@@ -211,6 +211,8 @@ fork(void)
   if((np->pgdir = copyuvm(curproc->pgdir, curproc->sz)) == 0){
     kfree(np->kstack);
     np->kstack = 0;
+    kfree((char*)np->saved_welcome_tf);
+    np->saved_welcome_tf = 0;
     np->state = UNUSED;
     return -1;
   }
@@ -223,6 +225,14 @@ fork(void)
 
   // Clear %eax so that fork returns 0 in the child.
   np->tf->eax = 0;
+  np->welcome_function = curproc->welcome_function;
+  np->welcome_active = 0;
+
+  if(curproc->welcome_function != 0){
+    memmove(np->saved_welcome_tf, np->tf, sizeof(*np->tf));
+    np->tf->eip = curproc->welcome_function;
+    np->welcome_active = 1;
+  }
 
   for(i = 0; i < NOFILE; i++)
     if(curproc->ofile[i])
