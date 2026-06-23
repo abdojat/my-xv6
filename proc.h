@@ -50,6 +50,10 @@ struct proc {
   uint welcome_function;       // Registered welcome-function entry point
   struct trapframe *saved_welcome_tf; // Backup trapframe for welcoming fork
   int welcome_active;          // Child is currently running welcome function
+  void *signal_handler;        // Registered signal handler entry point
+  int signal_pending;          // Whether a signal is waiting to be delivered
+  int in_signal_handler;       // Whether the process is running its handler
+  struct trapframe *old_tf;    // Backup trapframe for signal delivery
   struct proc *parent;         // Parent process
   struct trapframe *tf;        // Trap frame for current syscall
   struct context *context;     // swtch() here to run process

@@ -90,16 +90,30 @@ found:
     kfree((char*)p->saved_welcome_tf);
     p->saved_welcome_tf = 0;
   }
+  if(p->old_tf){
+    kfree((char*)p->old_tf);
+    p->old_tf = 0;
+  }
   p->state = EMBRYO;
   p->pid = nextpid++;
   p->priority = DEFAULT_PRIORITY;
   p->current_weight = 0;
   p->welcome_function = 0;
   p->welcome_active = 0;
+  p->signal_handler = 0;
+  p->signal_pending = 0;
+  p->in_signal_handler = 0;
   p->profile_name[0] = 0;
   p->syscall_count = 0;
   p->timer_interrupt_count = 0;
   if((p->saved_welcome_tf = (struct trapframe*)kalloc()) == 0){
+    p->state = UNUSED;
+    release(&ptable.lock);
+    return 0;
+  }
+  if((p->old_tf = (struct trapframe*)kalloc()) == 0){
+    kfree((char*)p->saved_welcome_tf);
+    p->saved_welcome_tf = 0;
     p->state = UNUSED;
     release(&ptable.lock);
     return 0;
@@ -111,6 +125,8 @@ found:
   if((p->kstack = kalloc()) == 0){
     kfree((char*)p->saved_welcome_tf);
     p->saved_welcome_tf = 0;
+    kfree((char*)p->old_tf);
+    p->old_tf = 0;
     p->state = UNUSED;
     return 0;
   }
@@ -213,6 +229,8 @@ fork(void)
     np->kstack = 0;
     kfree((char*)np->saved_welcome_tf);
     np->saved_welcome_tf = 0;
+    kfree((char*)np->old_tf);
+    np->old_tf = 0;
     np->state = UNUSED;
     return -1;
   }
@@ -227,6 +245,10 @@ fork(void)
   np->tf->eax = 0;
   np->welcome_function = curproc->welcome_function;
   np->welcome_active = 0;
+  np->signal_handler = curproc->signal_handler;
+  np->signal_pending = 0;
+  np->in_signal_handler = 0;
+  memset(np->old_tf, 0, sizeof(*np->old_tf));
 
   if(curproc->welcome_function != 0){
     memmove(np->saved_welcome_tf, np->tf, sizeof(*np->tf));
@@ -323,6 +345,8 @@ wait(void)
         p->kstack = 0;
         kfree((char*)p->saved_welcome_tf);
         p->saved_welcome_tf = 0;
+        kfree((char*)p->old_tf);
+        p->old_tf = 0;
         freevm(p->pgdir);
         p->pid = 0;
         p->parent = 0;
@@ -330,6 +354,9 @@ wait(void)
         p->current_weight = 0;
         p->welcome_function = 0;
         p->welcome_active = 0;
+        p->signal_handler = 0;
+        p->signal_pending = 0;
+        p->in_signal_handler = 0;
         p->name[0] = 0;
         p->profile_name[0] = 0;
         p->syscall_count = 0;
