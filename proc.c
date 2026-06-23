@@ -518,6 +518,29 @@ getChildren(void)
   release(&ptable.lock);
 }
 
+// Print siblings of the current process.
+void
+getSibling(void)
+{
+  struct proc *current = myproc();
+  struct proc *parent = current->parent;
+  struct proc *p;
+  int count = 0;
+
+  acquire(&ptable.lock);
+  cprintf("Sibling PID's are:\n");
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->state == UNUSED)
+      continue;
+    if(p != current && p->parent == parent){
+      cprintf("%d\n", p->pid);
+      count++;
+    }
+  }
+  cprintf("No. of Siblings: %d\n", count);
+  release(&ptable.lock);
+}
+
 //PAGEBREAK: 36
 // Print a process listing to console.  For debugging.
 // Runs when user types ^P on console.

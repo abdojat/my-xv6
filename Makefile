@@ -171,6 +171,7 @@ UPROGS=\
 	_forktest\
 	_grep\
 	_getchildren\
+	_getsibling\
 	_hello\
 	_helloyou\
 	_init\

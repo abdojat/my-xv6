@@ -23,3 +23,4 @@
 #define SYS_hello  22
 #define SYS_helloYou 23
 #define SYS_getChildren 24
+#define SYS_getSibling 25
