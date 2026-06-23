@@ -110,6 +110,7 @@ int             growproc(int);
 int             kill(int);
 void            getChildren(void);
 void            getSibling(void);
+void            pstree(void);
 struct cpu*     mycpu(void);
 struct proc*    myproc();
 void            pinit(void);
