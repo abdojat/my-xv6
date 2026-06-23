@@ -25,3 +25,4 @@
 #define SYS_getChildren 24
 #define SYS_getSibling 25
 #define SYS_pstree 26
+#define SYS_is_proc_valid 27

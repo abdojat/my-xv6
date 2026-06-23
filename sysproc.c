@@ -128,3 +128,13 @@ sys_pstree(void)
   pstree();
   return 0;
 }
+
+int
+sys_is_proc_valid(void)
+{
+  int pid;
+
+  if(argint(0, &pid) < 0)
+    return -1;
+  return is_proc_valid(pid);
+}

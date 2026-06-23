@@ -28,6 +28,7 @@ void helloYou(char*);
 void getChildren(void);
 void getSibling(void);
 void pstree(void);
+int is_proc_valid(int);
 
 // ulib.c
 int stat(const char*, struct stat*);
