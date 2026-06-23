@@ -178,6 +178,7 @@ UPROGS=\
 	_test_state\
 	_test_proc_name\
 	_schedtest\
+	_sigtest\
 	_pstree\
 	_init\
 	_kill\
@@ -263,6 +264,7 @@ EXTRA=\
 	printf.c umalloc.c mytest.c hello.c helloyou.c\
 	README dot-bochsrc *.pl toc.* runoff runoff1 runoff.list\
 	.gdbinit.tmpl gdbutil\
+	sigtest.c\
 
 dist:
 	rm -rf dist

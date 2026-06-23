@@ -779,7 +779,7 @@ sigsend(int pid)
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
     if(p->pid != pid)
       continue;
-    if(p->signal_pending == 0)
+    if(p->signal_pending == 0 && p->in_signal_handler == 0)
       p->signal_pending = 1;
     release(&ptable.lock);
     return 0;

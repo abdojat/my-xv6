@@ -4,6 +4,7 @@
 #include "memlayout.h"
 #include "mmu.h"
 #include "proc.h"
+#include "syscall.h"
 #include "x86.h"
 #include "traps.h"
 #include "spinlock.h"
@@ -46,13 +47,17 @@ trap(struct trapframe *tf)
 
   curproc = myproc();
   if(tf->trapno == T_SYSCALL){
+    int num;
+
     if(curproc->killed)
       exit();
     curproc->tf = tf;
+    num = curproc->tf->eax;
     syscall();
     if(curproc->killed)
       exit();
-    deliver_signal_if_pending(tf);
+    if(num != SYS_sigreturn)
+      deliver_signal_if_pending(tf);
     return;
   }
 
