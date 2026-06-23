@@ -27,6 +27,7 @@ void hello(void);
 void helloYou(char*);
 void getChildren(void);
 void getSibling(void);
+void pstree(void);
 
 // ulib.c
 int stat(const char*, struct stat*);

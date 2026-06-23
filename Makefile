@@ -174,6 +174,7 @@ UPROGS=\
 	_getsibling\
 	_hello\
 	_helloyou\
+	_pstree\
 	_init\
 	_kill\
 	_ln\

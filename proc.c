@@ -541,6 +541,37 @@ getSibling(void)
   release(&ptable.lock);
 }
 
+// Print the process tree rooted at the current process, limited to children
+// and grandchildren as required by the lab task.
+void
+pstree(void)
+{
+  struct proc *root = myproc();
+  struct proc *p;
+  struct proc *child;
+
+  acquire(&ptable.lock);
+  cprintf("%d [%s]\n", root->pid, root->name);
+
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->state == UNUSED)
+      continue;
+    if(p->parent != root)
+      continue;
+
+    cprintf(" %d [%s]\n", p->pid, p->name);
+
+    for(child = ptable.proc; child < &ptable.proc[NPROC]; child++){
+      if(child->state == UNUSED)
+        continue;
+      if(child->parent == p)
+        cprintf("  %d [%s]\n", child->pid, child->name);
+    }
+  }
+
+  release(&ptable.lock);
+}
+
 //PAGEBREAK: 36
 // Print a process listing to console.  For debugging.
 // Runs when user types ^P on console.
