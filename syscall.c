@@ -120,6 +120,7 @@ extern int sys_welcomeFunction(void);
 extern int sys_welcomeDone(void);
 extern int sys_signal(void);
 extern int sys_sigsend(void);
+extern int sys_sigreturn(void);
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -160,6 +161,7 @@ static int (*syscalls[])(void) = {
 [SYS_welcomeDone] sys_welcomeDone,
 [SYS_signal]  sys_signal,
 [SYS_sigsend] sys_sigsend,
+[SYS_sigreturn] sys_sigreturn,
 };
 
 void

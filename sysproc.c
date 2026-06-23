@@ -259,3 +259,9 @@ sys_sigsend(void)
     return -1;
   return sigsend(pid);
 }
+
+int
+sys_sigreturn(void)
+{
+  return sigreturn();
+}

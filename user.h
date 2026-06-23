@@ -40,6 +40,7 @@ int welcomeFunction(void *);
 int welcomeDone(void);
 int signal(void *);
 int sigsend(int);
+int sigreturn(void);
 
 // ulib.c
 int stat(const char*, struct stat*);

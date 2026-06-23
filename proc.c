@@ -789,7 +789,7 @@ sigsend(int pid)
 }
 
 int
-dequeue_signal(void (**handler)(void))
+deliver_signal(struct trapframe *tf)
 {
   struct proc *p = myproc();
 
@@ -797,14 +797,35 @@ dequeue_signal(void (**handler)(void))
     return 0;
 
   acquire(&ptable.lock);
-  if(p->signal_pending == 0 || p->signal_handler == 0){
+  if(p->signal_pending == 0 || p->signal_handler == 0 || p->in_signal_handler){
     release(&ptable.lock);
     return 0;
   }
+  p->tf = tf;
+  memmove(p->old_tf, tf, sizeof(struct trapframe));
+  p->tf->eip = (uint)p->signal_handler;
   p->signal_pending = 0;
-  *handler = (void (*)(void))p->signal_handler;
+  p->in_signal_handler = 1;
   release(&ptable.lock);
   return 1;
+}
+
+int
+sigreturn(void)
+{
+  struct proc *curproc = myproc();
+  uint eax;
+
+  acquire(&ptable.lock);
+  if(curproc == 0 || curproc->in_signal_handler == 0 || curproc->old_tf == 0){
+    release(&ptable.lock);
+    return -1;
+  }
+  eax = curproc->old_tf->eax;
+  memmove(curproc->tf, curproc->old_tf, sizeof(struct trapframe));
+  curproc->in_signal_handler = 0;
+  release(&ptable.lock);
+  return eax;
 }
 
 // Print direct children of the current process.

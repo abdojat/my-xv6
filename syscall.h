@@ -37,3 +37,4 @@
 #define SYS_welcomeDone 36
 #define SYS_signal 37
 #define SYS_sigsend 38
+#define SYS_sigreturn 39

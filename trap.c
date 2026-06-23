@@ -15,14 +15,9 @@ struct spinlock tickslock;
 uint ticks;
 
 static void
-deliver_signal_if_pending(void)
+deliver_signal_if_pending(struct trapframe *tf)
 {
-  void (*handler)(void);
-
-  if(dequeue_signal(&handler) == 0)
-    return;
-
-  handler();
+  deliver_signal(tf);
 }
 
 void
@@ -57,7 +52,7 @@ trap(struct trapframe *tf)
     syscall();
     if(curproc->killed)
       exit();
-    deliver_signal_if_pending();
+    deliver_signal_if_pending(tf);
     return;
   }
 
@@ -128,5 +123,5 @@ trap(struct trapframe *tf)
     exit();
 
   if(curproc && (tf->cs&3) == DPL_USER)
-    deliver_signal_if_pending();
+    deliver_signal_if_pending(tf);
 }
