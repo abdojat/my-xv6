@@ -89,6 +89,8 @@ found:
   p->state = EMBRYO;
   p->pid = nextpid++;
   p->profile_name[0] = 0;
+  p->syscall_count = 0;
+  p->timer_interrupt_count = 0;
 
   release(&ptable.lock);
 
@@ -296,6 +298,8 @@ wait(void)
         p->parent = 0;
         p->name[0] = 0;
         p->profile_name[0] = 0;
+        p->syscall_count = 0;
+        p->timer_interrupt_count = 0;
         p->killed = 0;
         p->state = UNUSED;
         release(&ptable.lock);
@@ -582,6 +586,24 @@ get_proc_name(int pid, char *buf, int size)
     safestrcpy(buf, p->profile_name, size);
     release(&ptable.lock);
     return 1;
+  }
+  release(&ptable.lock);
+  return 0;
+}
+
+int
+get_num_syscall(int pid)
+{
+  struct proc *p;
+  int count;
+
+  acquire(&ptable.lock);
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->pid != pid)
+      continue;
+    count = p->syscall_count;
+    release(&ptable.lock);
+    return count;
   }
   release(&ptable.lock);
   return 0;
