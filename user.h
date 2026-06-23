@@ -38,6 +38,8 @@ int setprio(int);
 int getprio(void);
 int welcomeFunction(void *);
 int welcomeDone(void);
+int signal(void *);
+int sigsend(int);
 
 // ulib.c
 int stat(const char*, struct stat*);

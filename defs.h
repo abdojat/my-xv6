@@ -121,6 +121,8 @@ int             setprio(int);
 int             getprio(void);
 int             welcomeFunction(void *);
 int             welcomeDone(void);
+int             signal(void *);
+int             sigsend(int);
 struct cpu*     mycpu(void);
 struct proc*    myproc();
 void            pinit(void);

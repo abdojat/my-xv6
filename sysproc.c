@@ -239,3 +239,23 @@ sys_get_num_timer_interrupts(void)
     return -1;
   return get_num_timer_interrupts(pid);
 }
+
+int
+sys_signal(void)
+{
+  int handler;
+
+  if(argint(0, &handler) < 0)
+    return -1;
+  return signal((void *)handler);
+}
+
+int
+sys_sigsend(void)
+{
+  int pid;
+
+  if(argint(0, &pid) < 0)
+    return -1;
+  return sigsend(pid);
+}

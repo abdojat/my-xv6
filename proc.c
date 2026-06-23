@@ -755,6 +755,39 @@ welcomeDone(void)
   return 0;
 }
 
+int
+signal(void *handler)
+{
+  struct proc *curproc = myproc();
+  uint signal_handler = (uint)handler;
+
+  if(signal_handler == 0 || signal_handler >= curproc->sz)
+    return -1;
+
+  acquire(&ptable.lock);
+  curproc->signal_handler = handler;
+  release(&ptable.lock);
+  return 0;
+}
+
+int
+sigsend(int pid)
+{
+  struct proc *p;
+
+  acquire(&ptable.lock);
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->pid != pid)
+      continue;
+    if(p->signal_pending == 0)
+      p->signal_pending = 1;
+    release(&ptable.lock);
+    return 0;
+  }
+  release(&ptable.lock);
+  return -1;
+}
+
 // Print direct children of the current process.
 void
 getChildren(void)
