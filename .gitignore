@@ -1,0 +1,56 @@
+# xv6 build artifacts
+/*.o
+/*.d
+/*.asm
+/*.sym
+/*.img
+
+# Generated xv6 files and binaries
+/bootblock
+/entryother
+/initcode
+/initcode.out
+/kernel
+/kernelmemfs
+/mkfs
+/vectors.S
+/_*
+
+# Debugger and emulator local files
+/.gdbinit
+/.bochsrc
+/bochsout.txt
+/parport.out
+/qemu.log
+
+# Print, documentation, and distribution outputs
+/fmt/
+/dist/
+/dist-test/
+/xv6.pdf
+/xv6-rev*.tar.gz
+/*.tex
+/*.dvi
+/*.idx
+/*.aux
+/*.log
+/*.ind
+/*.ilg
+/*.ps
+
+# Tags
+/TAGS
+/tags
+
+# Editor, OS, and archive metadata
+*~
+*.swp
+*.swo
+*.bak
+*.tmp
+.DS_Store
+._*
+Thumbs.db
+Desktop.ini
+/.vscode/
+/.idea/
