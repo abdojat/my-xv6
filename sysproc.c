@@ -117,6 +117,12 @@ sys_welcomeFunction(void)
 }
 
 int
+sys_welcomeDone(void)
+{
+  return welcomeDone();
+}
+
+int
 sys_hello(void)
 {
   cprintf("Hello\n");

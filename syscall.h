@@ -34,3 +34,4 @@
 #define SYS_setprio 33
 #define SYS_getprio 34
 #define SYS_welcomeFunction 35
+#define SYS_welcomeDone 36

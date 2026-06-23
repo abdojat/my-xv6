@@ -715,6 +715,19 @@ welcomeFunction(void *address)
   return 0;
 }
 
+int
+welcomeDone(void)
+{
+  struct proc *curproc = myproc();
+
+  if(curproc->welcome_active == 0 || curproc->saved_welcome_tf == 0)
+    return -1;
+
+  memmove(curproc->tf, curproc->saved_welcome_tf, sizeof(struct trapframe));
+  curproc->welcome_active = 0;
+  return 0;
+}
+
 // Print direct children of the current process.
 void
 getChildren(void)

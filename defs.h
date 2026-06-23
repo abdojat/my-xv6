@@ -120,6 +120,7 @@ int             get_num_timer_interrupts(int);
 int             setprio(int);
 int             getprio(void);
 int             welcomeFunction(void *);
+int             welcomeDone(void);
 struct cpu*     mycpu(void);
 struct proc*    myproc();
 void            pinit(void);
