@@ -156,3 +156,16 @@ sys_get_proc_state(void)
     return -1;
   return get_proc_state(pid, buf, size);
 }
+
+int
+sys_fill_proc_name(void)
+{
+  int pid;
+  char *name;
+
+  if(argint(0, &pid) < 0)
+    return -1;
+  if(argstr(1, &name) < 0)
+    return -1;
+  return fill_proc_name(pid, name);
+}

@@ -30,6 +30,7 @@ void getSibling(void);
 void pstree(void);
 int is_proc_valid(int);
 int get_proc_state(int, char*, int);
+int fill_proc_name(int, char*);
 
 // ulib.c
 int stat(const char*, struct stat*);

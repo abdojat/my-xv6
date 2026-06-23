@@ -27,3 +27,4 @@
 #define SYS_pstree 26
 #define SYS_is_proc_valid 27
 #define SYS_get_proc_state 28
+#define SYS_fill_proc_name 29

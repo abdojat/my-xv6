@@ -110,6 +110,7 @@ extern int sys_getSibling(void);
 extern int sys_pstree(void);
 extern int sys_is_proc_valid(void);
 extern int sys_get_proc_state(void);
+extern int sys_fill_proc_name(void);
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -140,6 +141,7 @@ static int (*syscalls[])(void) = {
 [SYS_pstree]  sys_pstree,
 [SYS_is_proc_valid] sys_is_proc_valid,
 [SYS_get_proc_state] sys_get_proc_state,
+[SYS_fill_proc_name] sys_fill_proc_name,
 };
 
 void

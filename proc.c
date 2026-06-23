@@ -88,6 +88,7 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
+  p->profile_name[0] = 0;
 
   release(&ptable.lock);
 
@@ -209,6 +210,7 @@ fork(void)
   np->cwd = idup(curproc->cwd);
 
   safestrcpy(np->name, curproc->name, sizeof(curproc->name));
+  safestrcpy(np->profile_name, curproc->profile_name, sizeof(np->profile_name));
 
   pid = np->pid;
 
@@ -293,6 +295,7 @@ wait(void)
         p->pid = 0;
         p->parent = 0;
         p->name[0] = 0;
+        p->profile_name[0] = 0;
         p->killed = 0;
         p->state = UNUSED;
         release(&ptable.lock);
@@ -543,6 +546,23 @@ get_proc_state(int pid, char *buf, int size)
     if(p->pid != pid)
       continue;
     safestrcpy(buf, procstate_name(p->state), size);
+    release(&ptable.lock);
+    return 1;
+  }
+  release(&ptable.lock);
+  return 0;
+}
+
+int
+fill_proc_name(int pid, char *name)
+{
+  struct proc *p;
+
+  acquire(&ptable.lock);
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->pid != pid)
+      continue;
+    safestrcpy(p->profile_name, name, sizeof(p->profile_name));
     release(&ptable.lock);
     return 1;
   }
