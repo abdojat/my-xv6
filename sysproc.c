@@ -107,3 +107,10 @@ sys_helloYou(void)
   cprintf("%s\n", name);
   return 0;
 }
+
+int
+sys_getChildren(void)
+{
+  getChildren();
+  return 0;
+}

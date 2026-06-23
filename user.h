@@ -25,6 +25,7 @@ int sleep(int);
 int uptime(void);
 void hello(void);
 void helloYou(char*);
+void getChildren(void);
 
 // ulib.c
 int stat(const char*, struct stat*);

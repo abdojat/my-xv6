@@ -496,6 +496,28 @@ kill(int pid)
   return -1;
 }
 
+// Print direct children of the current process.
+void
+getChildren(void)
+{
+  struct proc *current = myproc();
+  struct proc *p;
+  int count = 0;
+
+  acquire(&ptable.lock);
+  cprintf("Children PID's are:\n");
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->state == UNUSED)
+      continue;
+    if(p->parent == current){
+      cprintf("%d\n", p->pid);
+      count++;
+    }
+  }
+  cprintf("No. of Children: %d\n", count);
+  release(&ptable.lock);
+}
+
 //PAGEBREAK: 36
 // Print a process listing to console.  For debugging.
 // Runs when user types ^P on console.
