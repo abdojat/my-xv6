@@ -609,6 +609,24 @@ get_num_syscall(int pid)
   return 0;
 }
 
+int
+get_num_timer_interrupts(int pid)
+{
+  struct proc *p;
+  int count;
+
+  acquire(&ptable.lock);
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->pid != pid)
+      continue;
+    count = p->timer_interrupt_count;
+    release(&ptable.lock);
+    return count;
+  }
+  release(&ptable.lock);
+  return 0;
+}
+
 // Print direct children of the current process.
 void
 getChildren(void)

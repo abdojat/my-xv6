@@ -116,6 +116,7 @@ int             get_proc_state(int, char*, int);
 int             fill_proc_name(int, char*);
 int             get_proc_name(int, char*, int);
 int             get_num_syscall(int);
+int             get_num_timer_interrupts(int);
 struct cpu*     mycpu(void);
 struct proc*    myproc();
 void            pinit(void);
