@@ -169,3 +169,21 @@ sys_fill_proc_name(void)
     return -1;
   return fill_proc_name(pid, name);
 }
+
+int
+sys_get_proc_name(void)
+{
+  int pid;
+  int size;
+  char *buf;
+
+  if(argint(0, &pid) < 0)
+    return -1;
+  if(argint(2, &size) < 0)
+    return -1;
+  if(size <= 0)
+    return -1;
+  if(argptr(1, &buf, size) < 0)
+    return -1;
+  return get_proc_name(pid, buf, size);
+}

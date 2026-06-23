@@ -570,6 +570,23 @@ fill_proc_name(int pid, char *name)
   return 0;
 }
 
+int
+get_proc_name(int pid, char *buf, int size)
+{
+  struct proc *p;
+
+  acquire(&ptable.lock);
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->pid != pid)
+      continue;
+    safestrcpy(buf, p->profile_name, size);
+    release(&ptable.lock);
+    return 1;
+  }
+  release(&ptable.lock);
+  return 0;
+}
+
 // Print direct children of the current process.
 void
 getChildren(void)

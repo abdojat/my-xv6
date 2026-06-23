@@ -114,6 +114,7 @@ void            pstree(void);
 int             is_proc_valid(int);
 int             get_proc_state(int, char*, int);
 int             fill_proc_name(int, char*);
+int             get_proc_name(int, char*, int);
 struct cpu*     mycpu(void);
 struct proc*    myproc();
 void            pinit(void);
