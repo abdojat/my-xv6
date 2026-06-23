@@ -33,3 +33,4 @@
 #define SYS_get_num_timer_interrupts 32
 #define SYS_setprio 33
 #define SYS_getprio 34
+#define SYS_welcomeFunction 35

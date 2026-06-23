@@ -47,6 +47,9 @@ struct proc {
   int pid;                     // Process ID
   int priority;                // Scheduling priority
   int current_weight;          // Scheduler bookkeeping for weighted RR
+  uint welcome_function;       // Registered welcome-function entry point
+  struct trapframe *saved_welcome_tf; // Backup trapframe for welcoming fork
+  int welcome_active;          // Child is currently running welcome function
   struct proc *parent;         // Parent process
   struct trapframe *tf;        // Trap frame for current syscall
   struct context *context;     // swtch() here to run process

@@ -86,18 +86,31 @@ allocproc(void)
   return 0;
 
 found:
+  if(p->saved_welcome_tf){
+    kfree((char*)p->saved_welcome_tf);
+    p->saved_welcome_tf = 0;
+  }
   p->state = EMBRYO;
   p->pid = nextpid++;
   p->priority = DEFAULT_PRIORITY;
   p->current_weight = 0;
+  p->welcome_function = 0;
+  p->welcome_active = 0;
   p->profile_name[0] = 0;
   p->syscall_count = 0;
   p->timer_interrupt_count = 0;
+  if((p->saved_welcome_tf = (struct trapframe*)kalloc()) == 0){
+    p->state = UNUSED;
+    release(&ptable.lock);
+    return 0;
+  }
 
   release(&ptable.lock);
 
   // Allocate kernel stack.
   if((p->kstack = kalloc()) == 0){
+    kfree((char*)p->saved_welcome_tf);
+    p->saved_welcome_tf = 0;
     p->state = UNUSED;
     return 0;
   }
@@ -298,11 +311,15 @@ wait(void)
         pid = p->pid;
         kfree(p->kstack);
         p->kstack = 0;
+        kfree((char*)p->saved_welcome_tf);
+        p->saved_welcome_tf = 0;
         freevm(p->pgdir);
         p->pid = 0;
         p->parent = 0;
         p->priority = DEFAULT_PRIORITY;
         p->current_weight = 0;
+        p->welcome_function = 0;
+        p->welcome_active = 0;
         p->name[0] = 0;
         p->profile_name[0] = 0;
         p->syscall_count = 0;
@@ -670,6 +687,22 @@ getprio(void)
   priority = curproc->priority;
   release(&ptable.lock);
   return priority;
+}
+
+int
+welcomeFunction(void *address)
+{
+  struct proc *curproc = myproc();
+  uint welcome_function = (uint)address;
+
+  if(welcome_function == 0 || welcome_function >= curproc->sz)
+    return -1;
+
+  acquire(&ptable.lock);
+  curproc->welcome_function = welcome_function;
+  curproc->welcome_active = 0;
+  release(&ptable.lock);
+  return 0;
 }
 
 // Print direct children of the current process.

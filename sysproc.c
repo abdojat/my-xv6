@@ -107,6 +107,16 @@ sys_getprio(void)
 }
 
 int
+sys_welcomeFunction(void)
+{
+  int address;
+
+  if(argint(0, &address) < 0)
+    return -1;
+  return welcomeFunction((void *)address);
+}
+
+int
 sys_hello(void)
 {
   cprintf("Hello\n");
